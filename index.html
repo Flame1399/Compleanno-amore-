@@ -45,15 +45,16 @@ h1{
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(25, 30px);
+    grid-template-columns:repeat(25, 34px);
     justify-content:center;
     gap:2px;
     margin:30px 0;
 }
 
 .cell{
-    width:30px;
-    height:30px;
+    width:34px;
+    height:34px;
+    font-size:16px;
     background:white;
     border:1px solid #ddd;
     display:flex;
@@ -150,6 +151,24 @@ button:hover{
     line-height:1.8;
 }
 
+#secretTitle{
+animation:fadeUp .8s ease;
+}
+
+@keyframes fadeUp{
+
+from{
+opacity:0;
+transform:translateY(20px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
 </style>
 </head>
 
@@ -163,16 +182,15 @@ button:hover{
 
 <div class="intro">
 
-Hai davanti una raccolta di ricordi,
-persone, luoghi ed emozioni.
+❤️ Benvenuta piccola Mia ❤️
 
-Non tutte le parole sono importanti.
+Davanti a te ci sono parole, ricordi, persone e luoghi
 
-Alcune raccontano la nostra storia.
+Alcuni hanno fatto parte della nostra storia. Altri servono soltanto a confonderti.
 
-Altre servono soltanto a confonderti.
+Trova gli indizi nascosti nella griglia.
 
-Trova le risposte agli indovinelli.
+Quando li avrai scoperti tutti, il tuo regalo verrà finalmente svelato.
 
 </div>
 
@@ -266,52 +284,52 @@ const clues = [
 
 {
 word:"MARIKA",
-clue:"Una persona che, senza saperlo, ha avuto un ruolo nell'inizio di questa storia."
+clue:"Una persona che, senza volerlo, ha avuto un ruolo nell'inizio di questa storia."
 },
 
 {
 word:"ILA",
-clue:"Chi completa il duo?"
+clue:"Tre lettere che significano molto più di quanto sembri."
 },
 
 {
 word:"PUB",
-clue:"Il luogo di tante risate e serate."
+clue:"Un luogo dove il tempo è passato più velocemente del previsto."
 },
 
 {
 word:"DICEMBRE",
-clue:"Il mese che custodisce uno dei nostri ricordi."
+clue:"Un mese che custodisce un ricordo speciale."
 },
 
 {
 word:"MATERA",
-clue:"La città che ci è rimasta nel cuore."
+clue:"Una città che continua a far parlare il cuore."
 },
 
 {
 word:"NOCCIOLA",
-clue:"Il gusto che mi ricorda te."
+clue:"Un sapore che richiama immediatamente qualcuno."
 },
 
 {
 word:"GIOIAVITAE",
-clue:"Una destinazione ancora sconosciuta."
+clue:"Una destinazione che ancora non conosci."
 },
 
 {
 word:"CAVALIERPEPE",
-clue:"Un luogo dove presto brinderemo."
+clue:"Tra colline e vigneti si trova una parte della risposta."
 },
 
 {
 word:"OTTOBRE",
-clue:"Il mese della prossima avventura."
+clue:"Il mese in cui accadrà qualcosa di speciale."
 },
 
 {
 word:"WEEKEND",
-clue:"La parola che riassume tutto."
+clue:"La parola che collega tutti gli indizi."
 }
 
 ];
@@ -573,23 +591,25 @@ document
 
 const secretSteps = [
 
+"❤️ COMPLIMENTI ❤️",
+
 "PREPARA",
 
 "LA",
 
 "VALIGIA",
 
-"10 - 11",
+"🗓 10 - 11 OTTOBRE",
 
-"OTTOBRE",
+"📍 GIOIA VITAE",
 
-"GIOIAVITAE ❤️",
+"🍷 DEGUSTAZIONE",
 
-"DEGUSTAZIONE 🍷",
+"🍇 TENUTA CAVALIER PEPE",
 
-"TENUTA CAVALIER PEPE",
+"🏡 WEEKEND ROMANTICO PER DUE",
 
-"BUON COMPLEANNO AMORE ❤️"
+"❤️ BUON COMPLEANNO AMORE ❤️"
 
 ];
 
