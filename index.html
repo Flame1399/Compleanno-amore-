@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>L'Enigma del Compleanno ❤️</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#fff7f7;
+    margin:0;
+    padding:30px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+h1{
+    text-align:center;
+    color:#b3003c;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(12,40px);
+    gap:2px;
+    justify-content:center;
+    margin:30px 0;
+}
+
+.cell{
+    width:40px;
+    height:40px;
+    background:#fff;
+    border:1px solid #ccc;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    cursor:pointer;
+    user-select:none;
+}
+
+.selected{
+    background:#ffdce8;
+}
+
+.found{
+    background:#7ee081;
+}
+
+.words{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px;
+}
+
+.word{
+    padding:10px;
+    background:#f5f5f5;
+    border-radius:10px;
+}
+
+.word.done{
+    background:#7ee081;
+    font-weight:bold;
+}
+
+.secret{
+    text-align:center;
+    display:none;
+    margin-top:30px;
+}
+
+.secret h2{
+    color:#b3003c;
+    font-size:3rem;
+}
+
+button{
+    background:#b3003c;
+    color:white;
+    border:none;
+    padding:15px 30px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>❤️ Enigma 1 - Noi</h1>
+
+<p>
+Trova tutte le parole nascoste nella griglia.
+</p>
+
+<div class="grid" id="grid"></div>
+
+<h3>Parole da trovare</h3>
+
+<div class="words" id="wordList"></div>
+
+<div class="secret" id="secret">
+
+<h2>WEEKEND</h2>
+
+<p>
+🎉 Complimenti!
+</p>
+
+<p>
+Hai trovato la prima parola segreta.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const matrix = [
+
+"AMOREQWERTYU",
+"ZXCVBACIOPLK",
+"CUOREMNBVCXZ",
+"ASDFGHJKLQWE",
+"SORRISOPOIUY",
+"QWERTCAREZZA",
+"LKJHGFDSAQWE",
+"EMOZIONEXCVB",
+"INSIEMEQWERT",
+"COMPAGNIAABC",
+"ABBRACCIOXYZ",
+"FELICITAPLMN"
+
+];
+
+const targetWords = [
+"AMORE",
+"BACIO",
+"CUORE",
+"SORRISO",
+"CAREZZA",
+"EMOZIONE",
+"INSIEME",
+"COMPAGNIA",
+"ABBRACCIO",
+"FELICITA"
+];
+
+let selected = [];
+let foundWords = [];
+
+const grid = document.getElementById("grid");
+
+matrix.forEach((row,rowIndex)=>{
+
+ row.split('').forEach((letter,colIndex)=>{
+
+   const cell=document.createElement('div');
+
+   cell.classList.add('cell');
+
+   cell.dataset.letter=letter;
+
+   cell.dataset.row=rowIndex;
+
+   cell.dataset.col=colIndex;
+
+   cell.innerText=letter;
+
+   cell.onclick=()=>toggleCell(cell);
+
+   grid.appendChild(cell);
+
+ });
+
+});
+
+const wordList = document.getElementById("wordList");
+
+targetWords.forEach(word=>{
+
+ const div=document.createElement("div");
+
+ div.className="word";
+
+ div.id=word;
+
+ div.innerText=word;
+
+ wordList.appendChild(div);
+
+});
+
+function toggleCell(cell){
+
+ if(cell.classList.contains("found"))
+ return;
+
+ cell.classList.toggle("selected");
+
+ updateSelection();
+
+}
+
+function updateSelection(){
+
+ selected = [...document.querySelectorAll(".selected")];
+
+ const word = selected.map(x=>x.dataset.letter).join('');
+
+ const reverse = word.split('').reverse().join('');
+
+ targetWords.forEach(target=>{
+
+   if(
+      word===target ||
+      reverse===target
+   ){
+
+      foundWord(target);
+
+   }
+
+ });
+
+}
+
+function foundWord(word){
+
+ if(foundWords.includes(word))
+ return;
+
+ foundWords.push(word);
+
+ document.getElementById(word).classList.add("done");
+
+ selected.forEach(c=>{
+
+   c.classList.remove("selected");
+
+   c.classList.add("found");
+
+ });
+
+ if(foundWords.length===targetWords.length){
+
+    document.getElementById("secret").style.display='block';
+
+ }
+
+}
+
+</script>
+
+</body>
+
+</html>
