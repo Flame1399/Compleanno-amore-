@@ -3,99 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>L'Enigma del Compleanno ❤️</title>
 
 <style>
 
+*{
+    box-sizing:border-box;
+}
+
 body{
-    font-family:Arial,sans-serif;
-    background:#fff7f7;
     margin:0;
-    padding:30px;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#fff4f7,#ffe6ee);
+    color:#333;
 }
 
 .container{
-    max-width:1000px;
+    max-width:1400px;
     margin:auto;
+    padding:30px;
 }
 
 .card{
     background:white;
-    border-radius:20px;
+    border-radius:25px;
     padding:30px;
-    box-shadow:0 10px 30px rgba(0,0,0,.1);
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
 }
 
 h1{
     text-align:center;
-    color:#b3003c;
+    color:#b0004f;
+}
+
+.intro{
+    text-align:center;
+    color:#555;
+    margin-bottom:25px;
+    line-height:1.6;
 }
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(12,40px);
-    gap:2px;
+    grid-template-columns:repeat(25, 30px);
     justify-content:center;
+    gap:2px;
     margin:30px 0;
 }
 
 .cell{
-    width:40px;
-    height:40px;
-    background:#fff;
-    border:1px solid #ccc;
+    width:30px;
+    height:30px;
+    background:white;
+    border:1px solid #ddd;
     display:flex;
     justify-content:center;
     align-items:center;
     font-weight:bold;
     cursor:pointer;
     user-select:none;
+    border-radius:5px;
+}
+
+.cell:hover{
+    background:#ffe6ee;
 }
 
 .selected{
-    background:#ffdce8;
+    background:#ffd3e1 !important;
 }
 
 .found{
-    background:#7ee081;
+    background:#6ed46e !important;
+    color:white;
 }
 
 .words{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
     gap:10px;
 }
 
 .word{
-    padding:10px;
-    background:#f5f5f5;
-    border-radius:10px;
+    background:#f8f8f8;
+    border-radius:12px;
+    padding:12px;
 }
 
-.word.done{
-    background:#7ee081;
+.done{
+    background:#6ed46e !important;
+    color:white;
+}
+
+.progress-wrap{
+    margin:25px 0;
+}
+
+.progress-bg{
+    height:28px;
+    background:#ececec;
+    border-radius:100px;
+    overflow:hidden;
+}
+
+.progress{
+    height:100%;
+    width:0%;
+    background:#b0004f;
+    transition:.5s;
+}
+
+.counter{
+    text-align:center;
+    margin-top:10px;
     font-weight:bold;
 }
 
 .secret{
-    text-align:center;
     display:none;
-    margin-top:30px;
+    text-align:center;
+    margin-top:40px;
 }
 
 .secret h2{
-    color:#b3003c;
     font-size:3rem;
+    color:#b0004f;
 }
 
 button{
-    background:#b3003c;
+    background:#b0004f;
     color:white;
     border:none;
-    padding:15px 30px;
-    border-radius:10px;
+    padding:15px 25px;
+    border-radius:12px;
     cursor:pointer;
+    font-size:1rem;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.message{
+    margin-top:20px;
+    font-size:1.2rem;
+    line-height:1.8;
 }
 
 </style>
@@ -107,29 +159,50 @@ button{
 
 <div class="card">
 
-<h1>❤️ Enigma 1 - Noi</h1>
+<h1>❤️ L'Enigma del Compleanno ❤️</h1>
 
-<p>
-Trova tutte le parole nascoste nella griglia.
-</p>
+<div class="intro">
+
+Hai davanti una raccolta di ricordi,
+persone, luoghi ed emozioni.
+
+Non tutte le parole sono importanti.
+
+Alcune raccontano la nostra storia.
+
+Altre servono soltanto a confonderti.
+
+Trova le risposte agli indovinelli.
+
+</div>
 
 <div class="grid" id="grid"></div>
 
-<h3>Parole da trovare</h3>
+<h2>Indizi</h2>
 
 <div class="words" id="wordList"></div>
 
+<div class="progress-wrap">
+
+<div class="progress-bg">
+<div class="progress" id="progress"></div>
+</div>
+
+<div class="counter" id="counter">
+0 / 10 indizi risolti
+</div>
+
+</div>
+
 <div class="secret" id="secret">
 
-<h2>WEEKEND</h2>
+<h2 id="secretTitle">✨</h2>
 
-<p>
-🎉 Complimenti!
-</p>
+<button onclick="revealNext()">
+Apri il prossimo indizio
+</button>
 
-<p>
-Hai trovato la prima parola segreta.
-</p>
+<div class="message" id="secretMessage"></div>
 
 </div>
 
@@ -139,142 +212,421 @@ Hai trovato la prima parola segreta.
 
 <script>
 
-const matrix = [
+const importantWords = [
 
-"AMOREQWERTYU",
-"ZXCVBACIOPLK",
-"CUOREMNBVCXZ",
-"ASDFGHJKLQWE",
-"SORRISOPOIUY",
-"QWERTCAREZZA",
-"LKJHGFDSAQWE",
-"EMOZIONEXCVB",
-"INSIEMEQWERT",
-"COMPAGNIAABC",
-"ABBRACCIOXYZ",
-"FELICITAPLMN"
+"MARIKA",
+"ILA",
+"PUB",
+"DICEMBRE",
+"MATERA",
+"NOCCIOLA",
+"GIOIAVITAE",
+"CAVALIERPEPE",
+"OTTOBRE",
+"WEEKEND"
 
 ];
 
-const targetWords = [
-"AMORE",
-"BACIO",
-"CUORE",
-"SORRISO",
-"CAREZZA",
+const fakeWords = [
+
+"BORGO",
+"CALICE",
+"VIGNA",
+"VALIGIA",
+"BRINDISI",
+"TRAMONTO",
+"STELLE",
+"COLLINA",
 "EMOZIONE",
-"INSIEME",
-"COMPAGNIA",
+"RISATA",
+"RICORDO",
+"DESTINAZIONE",
+"SENTIERO",
+"RELAX",
+"AVVENTURA",
+"SAPORE",
+"FELICITA",
+"INCONTRO",
+"MUSICA",
+"PROFUMO",
+"CAREZZA",
+"CUORE",
+"VIAGGIO",
+"SOLE",
+"FOTOGRAFIA",
+"STRADA",
+"SERENITA",
+"COMPLICITA",
 "ABBRACCIO",
-"FELICITA"
+"MEMORIA"
+
 ];
+
+const clues = [
+
+{
+word:"MARIKA",
+clue:"Una persona che, senza saperlo, ha avuto un ruolo nell'inizio di questa storia."
+},
+
+{
+word:"ILA",
+clue:"Chi completa il duo?"
+},
+
+{
+word:"PUB",
+clue:"Il luogo di tante risate e serate."
+},
+
+{
+word:"DICEMBRE",
+clue:"Il mese che custodisce uno dei nostri ricordi."
+},
+
+{
+word:"MATERA",
+clue:"La città che ci è rimasta nel cuore."
+},
+
+{
+word:"NOCCIOLA",
+clue:"Il gusto che mi ricorda te."
+},
+
+{
+word:"GIOIAVITAE",
+clue:"Una destinazione ancora sconosciuta."
+},
+
+{
+word:"CAVALIERPEPE",
+clue:"Un luogo dove presto brinderemo."
+},
+
+{
+word:"OTTOBRE",
+clue:"Il mese della prossima avventura."
+},
+
+{
+word:"WEEKEND",
+clue:"La parola che riassume tutto."
+}
+
+];
+
+const allWords = [...importantWords, ...fakeWords];
+
+const SIZE = 25;
+
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+const directions = [
+
+[1,0],
+[-1,0],
+
+[0,1],
+[0,-1],
+
+[1,1],
+[-1,-1],
+
+[1,-1],
+[-1,1]
+
+];
+
+const board = Array.from(
+{length:SIZE},
+()=>Array(SIZE).fill("")
+);
+
+function placeWord(word){
+
+let placed = false;
+
+while(!placed){
+
+const dir =
+directions[
+Math.floor(
+Math.random()*directions.length
+)
+];
+
+const row =
+Math.floor(Math.random()*SIZE);
+
+const col =
+Math.floor(Math.random()*SIZE);
+
+let valid = true;
+
+for(let i=0;i<word.length;i++){
+
+const r=row+dir[0]*i;
+const c=col+dir[1]*i;
+
+if(
+r<0 ||
+c<0 ||
+r>=SIZE ||
+c>=SIZE
+){
+valid=false;
+break;
+}
+
+if(
+board[r][c]!=="" &&
+board[r][c]!==word[i]
+){
+valid=false;
+break;
+}
+
+}
+
+if(valid){
+
+for(let i=0;i<word.length;i++){
+
+const r=row+dir[0]*i;
+const c=col+dir[1]*i;
+
+board[r][c]=word[i];
+
+}
+
+placed=true;
+
+}
+
+}
+
+}
+
+allWords.forEach(placeWord);
+
+for(let r=0;r<SIZE;r++){
+
+for(let c=0;c<SIZE;c++){
+
+if(board[r][c]===""){
+
+board[r][c]=
+alphabet[
+Math.floor(
+Math.random()*alphabet.length
+)
+];
+
+}
+
+}
+
+}
+
+const grid =
+document.getElementById("grid");
+
+board.forEach(row=>{
+
+row.forEach(letter=>{
+
+const cell=document.createElement("div");
+
+cell.className="cell";
+
+cell.textContent=letter;
+
+cell.dataset.letter=letter;
+
+cell.onclick=()=>toggleCell(cell);
+
+grid.appendChild(cell);
+
+});
+
+});
+
+const wordList =
+document.getElementById("wordList");
+
+clues.forEach(clue=>{
+
+const div=document.createElement("div");
+
+div.className="word";
+
+div.id=clue.word;
+
+div.innerHTML=
+"<strong>?</strong> " +
+clue.clue;
+
+wordList.appendChild(div);
+
+});
 
 let selected = [];
 let foundWords = [];
 
-const grid = document.getElementById("grid");
-
-matrix.forEach((row,rowIndex)=>{
-
- row.split('').forEach((letter,colIndex)=>{
-
-   const cell=document.createElement('div');
-
-   cell.classList.add('cell');
-
-   cell.dataset.letter=letter;
-
-   cell.dataset.row=rowIndex;
-
-   cell.dataset.col=colIndex;
-
-   cell.innerText=letter;
-
-   cell.onclick=()=>toggleCell(cell);
-
-   grid.appendChild(cell);
-
- });
-
-});
-
-const wordList = document.getElementById("wordList");
-
-targetWords.forEach(word=>{
-
- const div=document.createElement("div");
-
- div.className="word";
-
- div.id=word;
-
- div.innerText=word;
-
- wordList.appendChild(div);
-
-});
-
 function toggleCell(cell){
 
- if(cell.classList.contains("found"))
- return;
+if(cell.classList.contains("found"))
+return;
 
- cell.classList.toggle("selected");
+cell.classList.toggle("selected");
 
- updateSelection();
+updateSelection();
 
 }
 
 function updateSelection(){
 
- selected = [...document.querySelectorAll(".selected")];
+selected =
+[
+...document.querySelectorAll(".selected")
+];
 
- const word = selected.map(x=>x.dataset.letter).join('');
+const word =
+selected.map(
+x=>x.dataset.letter
+).join('');
 
- const reverse = word.split('').reverse().join('');
+const reverse =
+word.split('').reverse().join('');
 
- targetWords.forEach(target=>{
+importantWords.forEach(target=>{
 
-   if(
-      word===target ||
-      reverse===target
-   ){
+if(
+word===target ||
+reverse===target
+){
+foundWord(target);
+}
 
-      foundWord(target);
-
-   }
-
- });
+});
 
 }
 
 function foundWord(word){
 
- if(foundWords.includes(word))
- return;
+if(foundWords.includes(word))
+return;
 
- foundWords.push(word);
+foundWords.push(word);
 
- document.getElementById(word).classList.add("done");
+document
+.getElementById(word)
+.classList
+.add("done");
 
- selected.forEach(c=>{
+selected.forEach(c=>{
 
-   c.classList.remove("selected");
+c.classList.remove("selected");
+c.classList.add("found");
 
-   c.classList.add("found");
+});
 
- });
+updateProgress();
 
- if(foundWords.length===targetWords.length){
+}
 
-    document.getElementById("secret").style.display='block';
+function updateProgress(){
 
- }
+const percentage =
+(
+foundWords.length /
+importantWords.length
+)*100;
+
+document
+.getElementById("progress")
+.style.width =
+percentage + "%";
+
+document
+.getElementById("counter")
+.innerText =
+foundWords.length +
+" / " +
+importantWords.length +
+" indizi risolti";
+
+if(
+foundWords.length===
+importantWords.length
+){
+
+document
+.getElementById("secret")
+.style.display =
+"block";
+
+}
+
+}
+
+const secretSteps = [
+
+"PREPARA",
+
+"LA",
+
+"VALIGIA",
+
+"10 - 11",
+
+"OTTOBRE",
+
+"GIOIAVITAE ❤️",
+
+"DEGUSTAZIONE 🍷",
+
+"TENUTA CAVALIER PEPE",
+
+"BUON COMPLEANNO AMORE ❤️"
+
+];
+
+let currentStep = 0;
+
+function revealNext(){
+
+document
+.getElementById("secretTitle")
+.innerHTML =
+secretSteps[currentStep];
+
+currentStep++;
+
+if(
+currentStep >=
+secretSteps.length
+){
+
+document
+.getElementById("secretMessage")
+.innerHTML =
+
+`
+Hai attraversato ricordi,
+persone, luoghi e piccoli indizi.
+
+Adesso è il momento di crearne uno nuovo.
+
+❤️
+`;
+
+}
 
 }
 
 </script>
 
 </body>
-
 </html>
