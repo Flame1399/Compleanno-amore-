@@ -55,6 +55,7 @@ h1{
     width:34px;
     height:34px;
     font-size:16px;
+    transition:.15s;
     background:white;
     border:1px solid #ddd;
     display:flex;
@@ -71,7 +72,9 @@ h1{
 }
 
 .selected{
-    background:#ffd3e1 !important;
+background:#ff9ec2 !important;
+color:white;
+transform:scale(1.08);
 }
 
 .found{
@@ -450,6 +453,24 @@ Math.random()*alphabet.length
 const grid =
 document.getElementById("grid");
 
+document.addEventListener(
+"mouseup",
+()=>{
+if(isSelecting){
+
+isSelecting = false;
+
+updateSelection();
+
+}
+});
+
+document.addEventListener(
+"touchend",
+()=>{
+updateSelection();
+});
+
 board.forEach(row=>{
 
 row.forEach(letter=>{
@@ -462,7 +483,57 @@ cell.textContent=letter;
 
 cell.dataset.letter=letter;
 
-cell.onclick=()=>toggleCell(cell);
+cell.addEventListener("mousedown",()=>{
+
+if(cell.classList.contains("found"))
+return;
+
+isSelecting = true;
+
+cell.classList.add("selected");
+
+});
+
+cell.addEventListener("mouseenter",()=>{
+
+if(
+isSelecting &&
+!cell.classList.contains("found")
+){
+cell.classList.add("selected");
+}
+
+});
+
+cell.addEventListener("touchstart",(e)=>{
+
+if(cell.classList.contains("found"))
+return;
+
+cell.classList.add("selected");
+
+});
+
+cell.addEventListener("touchmove",(e)=>{
+
+const touch =
+e.touches[0];
+
+const element =
+document.elementFromPoint(
+touch.clientX,
+touch.clientY
+);
+
+if(
+element &&
+element.classList.contains("cell") &&
+!element.classList.contains("found")
+){
+element.classList.add("selected");
+}
+
+});
 
 grid.appendChild(cell);
 
@@ -492,16 +563,14 @@ wordList.appendChild(div);
 let selected = [];
 let foundWords = [];
 
+let isSelecting = false;
+
 function toggleCell(cell){
 
 if(cell.classList.contains("found"))
 return;
 
 cell.classList.toggle("selected");
-
-updateSelection();
-
-}
 
 function updateSelection(){
 
@@ -518,16 +587,42 @@ x=>x.dataset.letter
 const reverse =
 word.split('').reverse().join('');
 
+let matched = false;
+
 importantWords.forEach(target=>{
 
 if(
 word===target ||
 reverse===target
 ){
+
+matched = true;
+
 foundWord(target);
+
 }
 
 });
+
+if(!matched){
+
+setTimeout(()=>{
+
+document
+.querySelectorAll(".selected")
+.forEach(cell=>{
+
+if(
+!cell.classList.contains("found")
+){
+cell.classList.remove("selected");
+}
+
+});
+
+},300);
+
+}
 
 }
 
